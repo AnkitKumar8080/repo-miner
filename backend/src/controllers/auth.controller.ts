@@ -1,4 +1,4 @@
-import { AuthModel } from "../models/auth.model";
+import { AuthModel } from "../models/user.model";
 import { ApiError } from "../utils/ApiError";
 import { ApiResponse } from "../utils/ApiResponse";
 import { asyncHandler } from "../utils/asyncHandler";

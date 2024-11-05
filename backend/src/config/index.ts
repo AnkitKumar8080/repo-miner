@@ -11,3 +11,8 @@ export const jwtconfig = {
   accessTokenValidity: parseInt(process.env.JWT_ACCESS_TOKEN_VALIDITY ?? "0"),
   refreshTokenValidity: parseInt(process.env.JWT_REFRESH_TOKEN_VALIDITY ?? "0"),
 };
+
+export const redisConnection = {
+  host: process.env.REDIS_HOST ?? "",
+  port: parseInt(process.env.REDIS_PORT ?? ""),
+};

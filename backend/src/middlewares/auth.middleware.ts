@@ -3,7 +3,7 @@ import { asyncHandler } from "../utils/asyncHandler";
 import { ApiError } from "../utils/ApiError";
 import { ApiResponse } from "../utils/ApiResponse";
 import { decodeToken } from "../utils/JWT";
-import { AuthModel } from "../models/auth.model";
+import { AuthModel } from "../models/user.model";
 import { JwtPayload } from "jsonwebtoken";
 import { ProtectedRequest } from "../types/app-request";
 

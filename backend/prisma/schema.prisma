@@ -47,13 +47,13 @@ model Mine {
 }
 
 model Repository {
-  id               String           @id @default(uuid())
+  id               String            @id @default(uuid())
   url              String
-  mine             Mine             @relation(fields: [mineId], references: [id])
+  mine             Mine              @relation(fields: [mineId], references: [id])
   mineId           String
-  repositoryStatus RepositoryStatus
-  createdAt        DateTime         @default(now())
-  updatedAt        DateTime         @updatedAt
+  repositoryStatus RepositoryStatus? @default(CLONING)
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
 }
 
 model QueryHistory {
