@@ -1,0 +1,66 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum RepositoryStatus {
+  CLONING
+  CHUNKING
+  EMBEDDING
+  COMPLETE
+  ERROR
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  username  String
+  password  String
+  avatar    String?
+  status    Boolean
+  Mine      Mine[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Mine {
+  id           String         @id @default(uuid())
+  name         String
+  user         User           @relation(fields: [userId], references: [id])
+  userId       String
+  repositories Repository[]
+  queryHistory QueryHistory[]
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  @@unique([userId, name]) // each user must create a unique mine
+}
+
+model Repository {
+  id               String           @id @default(uuid())
+  url              String
+  mine             Mine             @relation(fields: [mineId], references: [id])
+  mineId           String
+  repositoryStatus RepositoryStatus
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+}
+
+model QueryHistory {
+  id            String   @id @default(uuid())
+  queryText     String
+  resultSummary String?
+  mine          Mine     @relation(fields: [mineId], references: [id])
+  mineId        String
+  createdAt     DateTime @default(now())
+}
