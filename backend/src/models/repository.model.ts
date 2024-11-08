@@ -1,4 +1,4 @@
-import { Repository, RepositoryStatus } from "@prisma/client";
+import { Repository } from "@prisma/client";
 import { prisma } from "./prismaCli";
 
 export class RepositoryModel {

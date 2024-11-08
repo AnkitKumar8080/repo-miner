@@ -13,6 +13,13 @@ export const jwtconfig = {
 };
 
 export const redisConnection = {
-  host: process.env.REDIS_HOST ?? "",
-  port: parseInt(process.env.REDIS_PORT ?? ""),
+  host: "127.0.0.1", // or your Redis server IP
+  port: 6379, // Redis port
+  connectTimeout: 15000, // 15 seconds
+  maxRetriesPerRequest: null, // Recommended for BullMQ
+};
+
+export const ollama = {
+  api: process.env.OLLAMA_API || "http://localhost:11434/api/embeddings",
+  embeddingModel: process.env.OLLAMA_EMBEDDING_MODEL || "",
 };

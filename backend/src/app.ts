@@ -7,6 +7,8 @@ import cors from "cors";
 import { authRouter } from "./routes/auth.routes";
 import { errorHandler } from "./middlewares/errorHandler";
 import { mineRouter } from "./routes/mine.routes";
+import { repoRouter } from "./routes/repo.routes";
+import { startWorkers } from "./workers/workerManger";
 
 const app = express();
 
@@ -30,9 +32,13 @@ app.get("/health", (_req: Request, res: Response) => {
 // routes
 app.use("/auth", authRouter);
 app.use("/mine", mineRouter);
+app.use("/repo", repoRouter);
 
 // configure the error handler
 app.use(errorHandler);
+
+// start all the workers
+startWorkers();
 
 // create a http server
 const httpServer = createServer(app);

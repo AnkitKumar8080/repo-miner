@@ -24,4 +24,11 @@ export class MineModel {
       },
     });
   };
+
+  // get all mines of a user
+  static getAllMines = (userId: string): Promise<Mine[] | null> => {
+    return prisma.mine.findMany({
+      where: { userId: userId },
+    });
+  };
 }

@@ -1,4 +1,4 @@
-import { Response } from "express";
+import { Request, Response } from "express";
 import { MineModel } from "../models/mine.model";
 import { ProtectedRequest } from "../types/app-request";
 import { ApiResponse } from "../utils/ApiResponse";
@@ -38,5 +38,31 @@ export const createMine = asyncHandler(
     return res
       .status(201)
       .json(new ApiResponse(201, "mine created successfully!", mine));
+  }
+);
+
+// get all mines
+export const getAllMines = asyncHandler(
+  async (req: ProtectedRequest, res: Response) => {
+    const userId = req.user?.id;
+    console.log(userId);
+    if (!userId) {
+      throw new Error("internal error invalid userId");
+    }
+
+    // fetch all mines of a particular user
+    const mines = await MineModel.getAllMines(userId ?? "");
+
+    console.log(mines);
+
+    // if not mines found
+    if (!mines?.length) {
+      return res
+        .status(404)
+        .json(new ApiResponse(404, "no mines found of current user!"));
+    }
+
+    // return all the mines to the user
+    return res.status(200).json(new ApiResponse(200, "mines found", mines));
   }
 );
