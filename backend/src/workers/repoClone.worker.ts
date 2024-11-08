@@ -14,13 +14,13 @@ const git = SimpleGit();
 export const repoCloneWorker = new Worker(
   "cloneRepositoryQueue",
   async (job: Job) => {
-    const { userId, mineId, gitUrl } = job.data;
+    const { userId, mineId, gitUrl, repoId } = job.data;
 
     // clone the repository
     try {
       // create a id for folder name from repon
-      const folderId = hashString(gitUrl);
-      const dirPath = path.join(__dirname, "../../gitrepos", folderId);
+      // const folderId = hashString(gitUrl);
+      const dirPath = path.join(__dirname, "../../gitrepos", repoId);
       await createDir(dirPath);
 
       // clone git repo
@@ -33,9 +33,11 @@ export const repoCloneWorker = new Worker(
         return;
       }
 
+      console.log("\nrepoId\n" + repoId);
+      console.log(typeof repoId);
+
       // create a chroma db collection
-      const collection = await createChromaDbCollection(folderId);
-      console.log(`collection created ${collection?.id}`);
+      await createChromaDbCollection(repoId);
 
       // add a new job to codeChunkingQueue
       const addRes = await codeChunkingQueue.add(
@@ -45,8 +47,9 @@ export const repoCloneWorker = new Worker(
           mineId,
           gitUrl,
           repoDirPath: dirPath,
-        }
-        // { jobId: hashString(gitUrl) }
+          repoId,
+        },
+        { jobId: repoId }
       );
       console.log(
         `added code chunk job to codeChunkingQueue Id: ${addRes?.id}`

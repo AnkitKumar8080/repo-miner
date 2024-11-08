@@ -25,13 +25,15 @@ export class RepositoryModel {
   };
 
   // get all repository of a mine
-  static getMineRepositories = (
-    mineId: string
-  ): Promise<Repository[] | null> => {
+  static getMineRepositories = (mineId: string): Promise<Repository[] | []> => {
     return prisma.repository.findMany({
       where: {
         mineId,
       },
     });
   };
+  
+  // update repository status
+  static updateRepositoryStatus = ()
+  
 }

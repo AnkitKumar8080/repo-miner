@@ -1,9 +1,4 @@
-import {
-  ChromaClient,
-  CollectionParams,
-  CreateCollectionParams,
-  GetCollectionParams,
-} from "chromadb";
+import { ChromaClient, GetCollectionParams } from "chromadb";
 
 // create a new chroma client
 const chromaClient = new ChromaClient({ path: "http://localhost:8003" });
@@ -19,15 +14,16 @@ export const createChromaDbCollection = async (name: string): Promise<any> => {
       console.log(`collection ${name} exists, deleting...`);
       await chromaClient.deleteCollection({ name });
     }
-
-    const collection = await chromaClient.createCollection({ name });
-    if (collection) {
-      console.log("created chroma db collection: " + name);
-    }
-    return collection;
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+    console.log(error.message);
   }
+
+  // create a new collection in chroma db with repo hash
+  const collection = await chromaClient.createCollection({ name });
+  if (collection) {
+    console.log("created chroma db collection: " + name);
+  }
+  return collection;
 };
 
 // add to chromadb collection
@@ -44,6 +40,7 @@ export const addEmbChunkContentToCollection = async (
   } as GetCollectionParams);
 
   try {
+    // push embeddings into chromadb collection
     await collection.upsert({
       ids: [`${startLine}-${endLine}`],
       embeddings: [embedding],

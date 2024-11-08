@@ -5,7 +5,7 @@ import { addEmbChunkContentToCollection } from "../database/chromadb";
 export const embProcessor = new Worker(
   "embeddingStorageQueue",
   async (job) => {
-    const { repoHash, embeddings } = job.data;
+    const { repoId, embeddings } = job.data;
 
     try {
       // process the embeddings and push to chroma db
@@ -13,7 +13,7 @@ export const embProcessor = new Worker(
         const { startLine, endLine, filePath, content, embedding } = emb;
 
         await addEmbChunkContentToCollection(
-          repoHash,
+          repoId,
           startLine,
           endLine,
           content,

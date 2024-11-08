@@ -10,3 +10,5 @@ dist/
 # OS-specific and editor-specific files
 .DS_Store
 .vscode/
+
+backend/gitrepos/

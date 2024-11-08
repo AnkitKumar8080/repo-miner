@@ -2,7 +2,10 @@ import { Router } from "express";
 import { verifyJwt } from "../middlewares/auth.middleware";
 import { addRepositoryMiddleware } from "../validators/repo.validator";
 import { validate } from "../validators/validate";
-import { handleGitRepoUploads } from "../controllers/repo.controller";
+import {
+  getAllMineRepositories,
+  handleGitRepoUploads,
+} from "../controllers/repo.controller";
 
 export const repoRouter = Router();
 
@@ -11,4 +14,5 @@ repoRouter.use(verifyJwt);
 
 repoRouter
   .route("/")
-  .post(addRepositoryMiddleware(), validate, handleGitRepoUploads);
+  .post(addRepositoryMiddleware(), validate, handleGitRepoUploads)
+  .get(getAllMineRepositories);

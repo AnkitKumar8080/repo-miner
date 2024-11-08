@@ -5,7 +5,7 @@ export const embeddingsGenWorker = new Worker(
   "embeddingCreationQueue",
   async (job) => {
     try {
-      const { repoHash, fileChunksArr } = job.data;
+      const { repoId, fileChunksArr } = job.data;
 
       // arr to store embeddings
       const embeddings = [];
@@ -33,10 +33,14 @@ export const embeddingsGenWorker = new Worker(
       );
 
       // push all the embeddings to chromaDbQueue to be pushed into the chroma db
-      const psRes = await chromaDbQueue.add("pushEmbToChromaDb", {
-        repoHash,
-        embeddings,
-      });
+      const psRes = await chromaDbQueue.add(
+        "pushEmbToChromaDb",
+        {
+          repoId,
+          embeddings,
+        },
+        { jobId: repoId }
+      );
       console.log("embeddings pushed to chromaDbQueue, id: " + psRes.id);
     } catch (error) {
       console.log("error while generating chunks " + error);

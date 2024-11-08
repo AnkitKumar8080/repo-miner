@@ -9,7 +9,7 @@ import {
 export const codeChunkWorker = new Worker(
   "codeChunkingQueue",
   async (job) => {
-    const { userId, mineId, gitUrl, repoDirPath } = job.data;
+    const { userId, mineId, gitUrl, repoDirPath, repoId } = job.data;
 
     // generate chunks of each file
     const fileChunksArr = [];
@@ -33,10 +33,15 @@ export const codeChunkWorker = new Worker(
     );
 
     // add the chunks in the embeddingsQueue as a job for generating embeddings
-    const psRes = await embeddingCreationQueue.add("createEmbeddings", {
-      repoHash: hashString(gitUrl),
-      fileChunksArr,
-    });
+    const psRes = await embeddingCreationQueue.add(
+      "createEmbeddings",
+      {
+        // repoHash: hashString(gitUrl),
+        repoId,
+        fileChunksArr,
+      },
+      { jobId: repoId }
+    );
 
     console.log(
       `Added ${fileChunksArr.length} chunks to the embeddingsCreationQueue jobId: ${psRes.id}`
