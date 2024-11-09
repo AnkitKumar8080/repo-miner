@@ -99,8 +99,8 @@ export const deleteRepository = asyncHandler(
     const repo = await RepositoryModel.deleteRepositoryById(repoId);
     if (!repo) {
       return res
-        .status(400)
-        .json(new ApiResponse(400, "unable to delete repository"));
+        .status(500)
+        .json(new ApiResponse(500, "unable to delete repository"));
     }
 
     return res
