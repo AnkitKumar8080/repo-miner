@@ -66,3 +66,41 @@ export const getAllMines = asyncHandler(
     return res.status(200).json(new ApiResponse(200, "mines found", mines));
   }
 );
+
+// delete user mine
+export const deleteMine = asyncHandler(
+  async (req: ProtectedRequest, res: Response) => {
+    const { mineId } = req.body;
+    const userId = req.user?.id;
+
+    if (!mineId) {
+      return res.status(400).json(new ApiResponse(400, "mineId not provided"));
+    }
+
+    // check if user owns the mine
+    const mine = await MineModel.getMinebyId(mineId);
+
+    if (!mine) {
+      return res.status(404).json(new ApiResponse(404, "mine not found! "));
+    }
+
+    if (mine.userId !== userId) {
+      return res
+        .status(401)
+        .json(
+          new ApiResponse(401, "you are not authorized to delete this mine")
+        );
+    }
+
+    // delete the mine
+    const deletedMine = await MineModel.deleteMineById(mineId);
+
+    if (!deletedMine) {
+      return res.status(500).json(new ApiResponse(500, "Internal error"));
+    }
+
+    return res
+      .status(200)
+      .json(new ApiResponse(200, "mine deleted successfully"));
+  }
+);

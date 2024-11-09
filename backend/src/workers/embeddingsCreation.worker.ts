@@ -1,6 +1,8 @@
 import { Worker } from "bullmq";
 import { getEmbeddings } from "../utils/embeddingsGen";
 import { chromaDbQueue, connection } from "../queues/queues";
+import { RepositoryModel } from "../models/repository.model";
+import { RepositoryStatus } from "@prisma/client";
 export const embeddingsGenWorker = new Worker(
   "embeddingCreationQueue",
   async (job) => {

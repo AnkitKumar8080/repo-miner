@@ -5,6 +5,8 @@ import {
   getRepoFilePaths,
   hashString,
 } from "../utils/common";
+import { RepositoryStatus } from "@prisma/client";
+import { RepositoryModel } from "../models/repository.model";
 
 export const codeChunkWorker = new Worker(
   "codeChunkingQueue",
@@ -46,6 +48,16 @@ export const codeChunkWorker = new Worker(
     console.log(
       `Added ${fileChunksArr.length} chunks to the embeddingsCreationQueue jobId: ${psRes.id}`
     );
+
+    // update repository status
+    const updatedRepo = await RepositoryModel.updateRepositoryStatus(
+      repoId,
+      RepositoryStatus.EMBEDDING
+    );
+
+    if (updatedRepo) {
+      console.log(`update repo ${repoId} status to "EMBEDDING"`);
+    }
   },
 
   {

@@ -12,6 +12,15 @@ export class MineModel {
     });
   };
 
+  // get mine by id
+  static getMinebyId = (mineId: string): Promise<Mine | null> => {
+    return prisma.mine.findUnique({
+      where: {
+        id: mineId,
+      },
+    });
+  };
+
   // get mines by userId and username
   static getUsersMineByName = (
     userId: string,
@@ -29,6 +38,15 @@ export class MineModel {
   static getAllMines = (userId: string): Promise<Mine[] | null> => {
     return prisma.mine.findMany({
       where: { userId: userId },
+    });
+  };
+
+  // delete a mine by id
+  static deleteMineById = (mineId: string): Promise<Mine | null> => {
+    return prisma.mine.delete({
+      where: {
+        id: mineId,
+      },
     });
   };
 }

@@ -3,6 +3,7 @@ import { verifyJwt } from "../middlewares/auth.middleware";
 import { addRepositoryMiddleware } from "../validators/repo.validator";
 import { validate } from "../validators/validate";
 import {
+  deleteRepository,
   getAllMineRepositories,
   handleGitRepoUploads,
 } from "../controllers/repo.controller";
@@ -15,4 +16,5 @@ repoRouter.use(verifyJwt);
 repoRouter
   .route("/")
   .post(addRepositoryMiddleware(), validate, handleGitRepoUploads)
-  .get(getAllMineRepositories);
+  .get(getAllMineRepositories)
+  .delete(deleteRepository);

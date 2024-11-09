@@ -8,6 +8,8 @@ import SimpleGit from "simple-git";
 import { createDir, hashString } from "../utils/common";
 import path from "path";
 import { createChromaDbCollection } from "../database/chromadb";
+import { RepositoryModel } from "../models/repository.model";
+import { RepositoryStatus } from "@prisma/client";
 
 const git = SimpleGit();
 
@@ -54,6 +56,16 @@ export const repoCloneWorker = new Worker(
       console.log(
         `added code chunk job to codeChunkingQueue Id: ${addRes?.id}`
       );
+
+      // update repository status
+      const updatedRepo = await RepositoryModel.updateRepositoryStatus(
+        repoId,
+        RepositoryStatus.CHUNKING
+      );
+
+      if (updatedRepo) {
+        console.log(`update repo ${repoId} status to "CHUNKING"`);
+      }
     } catch (error) {
       throw new Error(
         "error creating dir for git url: " + gitUrl + "\n Error: " + error

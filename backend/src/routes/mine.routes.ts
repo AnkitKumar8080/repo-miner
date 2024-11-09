@@ -2,7 +2,11 @@ import { Router } from "express";
 import { verifyJwt } from "../middlewares/auth.middleware";
 import { mineValidator } from "../validators/mine.validator";
 import { validate } from "../validators/validate";
-import { createMine, getAllMines } from "../controllers/mine.controller";
+import {
+  createMine,
+  deleteMine,
+  getAllMines,
+} from "../controllers/mine.controller";
 
 export const mineRouter = Router();
 
@@ -12,4 +16,5 @@ mineRouter.use(verifyJwt);
 mineRouter
   .route("/")
   .post(mineValidator(), validate, createMine)
-  .get(getAllMines);
+  .get(getAllMines)
+  .delete(deleteMine);

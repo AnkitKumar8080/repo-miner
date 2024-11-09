@@ -1,4 +1,4 @@
-import { Repository } from "@prisma/client";
+import { Repository, RepositoryStatus } from "@prisma/client";
 import { prisma } from "./prismaCli";
 
 export class RepositoryModel {
@@ -32,8 +32,30 @@ export class RepositoryModel {
       },
     });
   };
-  
+
   // update repository status
-  static updateRepositoryStatus = ()
-  
+  static updateRepositoryStatus = (
+    repoId: string,
+    status: RepositoryStatus
+  ) => {
+    return prisma.repository.update({
+      where: {
+        id: repoId,
+      },
+      data: {
+        repositoryStatus: status,
+      },
+    });
+  };
+
+  // delete repo by id
+  static deleteRepositoryById = (
+    repoId: string
+  ): Promise<Repository | null> => {
+    return prisma.repository.delete({
+      where: {
+        id: repoId,
+      },
+    });
+  };
 }
