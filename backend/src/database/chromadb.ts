@@ -33,7 +33,7 @@ export const addEmbChunkContentToCollection = async (
   endLine: number,
   content: string,
   filePath: string,
-  embedding: []
+  embedding: any
 ): Promise<void> => {
   const collection = await chromaClient.getCollection({
     name,
@@ -48,8 +48,31 @@ export const addEmbChunkContentToCollection = async (
       documents: [content],
     });
   } catch (error: any) {
-    throw new Error(
-      "Error while upserting embedding to chromaDb: " + error.message
-    );
+    console.log(error.message);
+  }
+};
+
+// get collection from chromadb
+export const retrieveCodeSnippet = async (
+  name: string,
+  embedding: [][],
+  nResults: number = 8
+) => {
+  try {
+    const collection = await chromaClient.getCollection({
+      name,
+    } as GetCollectionParams);
+
+    // console.log(collection);
+
+    // get the code chunks and metadata
+    const results = await collection.query({
+      queryEmbeddings: embedding,
+      nResults,
+    });
+
+    return results;
+  } catch (error: any) {
+    console.log(error.message);
   }
 };

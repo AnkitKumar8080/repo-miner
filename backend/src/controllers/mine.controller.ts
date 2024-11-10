@@ -3,6 +3,14 @@ import { MineModel } from "../models/mine.model";
 import { ProtectedRequest } from "../types/app-request";
 import { ApiResponse } from "../utils/ApiResponse";
 import { asyncHandler } from "../utils/asyncHandler";
+import {
+  extractKeywordsFromQuery,
+  getEmbeddings,
+} from "../utils/localAiModels";
+import { retrieveCodeSnippet } from "../database/chromadb";
+import { RepositoryModel } from "../models/repository.model";
+import { processCollectionResult } from "../utils/common";
+import { geminiModel } from "../utils/llmModels";
 
 // route to create a new mine
 export const createMine = asyncHandler(
@@ -102,5 +110,71 @@ export const deleteMine = asyncHandler(
     return res
       .status(200)
       .json(new ApiResponse(200, "mine deleted successfully"));
+  }
+);
+
+// handle query request
+export const handleQueryRequest = asyncHandler(
+  async (req: ProtectedRequest, res: Response) => {
+    const { query, repoId } = req.body;
+    const userId = req.user?.id;
+
+    if (!query || !repoId) {
+      return res
+        .status(400)
+        .json(new ApiResponse(400, "query, mineId or repoId not provided!"));
+    }
+
+    const repository = await RepositoryModel.getRepositorybyId(repoId);
+
+    if (!repository) {
+      return res
+        .status(404)
+        .json(new ApiResponse(404, "repository not found!"));
+    }
+
+    const mine = await MineModel.getMinebyId(repository.mineId);
+
+    if (!mine) {
+      return res.status(404).json(new ApiResponse(404, "mine not found!"));
+    }
+
+    // check if user owns this repository
+    if (mine.userId !== userId) {
+      return res
+        .status(401)
+        .json(
+          new ApiResponse(
+            401,
+            "you are not authorized to query this repository"
+          )
+        );
+    }
+
+    // filter out the keywords from the query
+    // const filteredKeywords = await extractKeywordsFromQuery(query);
+
+    // convert the filtered keywords to embeddings
+    const { embedding } = await getEmbeddings(query);
+
+    // get the code snippets from the collection
+    const result = await retrieveCodeSnippet(repoId, embedding);
+
+    // console.log(result);
+
+    // process the result of the collection from chromadb
+    const fileChunksArr = processCollectionResult(result);
+
+    console.log(fileChunksArr);
+
+    // send it the LLM for generating response
+    const modelResult = await geminiModel(query, fileChunksArr);
+
+    console.log(modelResult);
+
+    return res
+      .status(200)
+      .json(new ApiResponse(200, "result fetched ", modelResult));
+    // stream the response from LLM to the user
   }
 );

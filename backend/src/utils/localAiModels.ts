@@ -1,13 +1,14 @@
 import axios from "axios";
 import { ollama } from "../config";
+import nlp from "compromise/three";
 
-export const getEmbeddings = async (code: string) => {
+export const getEmbeddings = async (data: string) => {
   try {
     const res = await axios.post(
       ollama.api,
       {
         model: ollama.embeddingModel,
-        prompt: code,
+        prompt: data,
       },
       {
         headers: { "Content-Type": "application/json" },
@@ -22,4 +23,10 @@ export const getEmbeddings = async (code: string) => {
     console.error("Error fetching embeddings:", error);
     throw error;
   }
+};
+
+export const extractKeywordsFromQuery = (query: string) => {
+  const doc = nlp(query);
+  const nouns = doc.nouns().out("text");
+  return nouns;
 };

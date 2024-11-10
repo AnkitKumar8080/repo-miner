@@ -138,11 +138,11 @@ export const createFilechunks = async (
   const totalLines = fileDataLines.length;
 
   const fileChunks = [];
-
   let curLine = 0;
+
   while (curLine < totalLines) {
     let endLine = curLine + splitFactor;
-    if (endLine < curLine + splitFactor) {
+    if (endLine > totalLines) {
       endLine = totalLines;
     }
 
@@ -198,4 +198,34 @@ export const getRepoFilePaths = async (
   await readdir(dirPath);
 
   return result;
+};
+
+export const processCollectionResult = (
+  result: any
+):
+  | {
+      filechunkInfo: {
+        endLine: number;
+        startLine: number;
+        filePath: string;
+      };
+      fileChunk: string;
+    }[]
+  | [] => {
+  const { metadatas, documents } = result;
+
+  if (!metadatas[0]?.length || !documents[0]?.length) {
+    throw new Error("metadata or documents does not exist");
+  }
+
+  const fileChunks = [];
+
+  for (let i = 0; i < metadatas[0].length; i++) {
+    fileChunks.push({
+      filechunkInfo: metadatas[0][i],
+      fileChunk: documents[0][i],
+    });
+  }
+
+  return fileChunks;
 };

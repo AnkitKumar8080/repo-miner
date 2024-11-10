@@ -1,8 +1,6 @@
 import { Worker } from "bullmq";
-import { getEmbeddings } from "../utils/embeddingsGen";
+import { getEmbeddings } from "../utils/localAiModels";
 import { chromaDbQueue, connection } from "../queues/queues";
-import { RepositoryModel } from "../models/repository.model";
-import { RepositoryStatus } from "@prisma/client";
 export const embeddingsGenWorker = new Worker(
   "embeddingCreationQueue",
   async (job) => {
@@ -29,6 +27,8 @@ export const embeddingsGenWorker = new Worker(
           embedding,
         });
       }
+
+      console.log("embeddings: " + JSON.stringify(embeddings, null, 2));
 
       console.log(
         "embeddings generated successfully, total size: " + embeddings.length

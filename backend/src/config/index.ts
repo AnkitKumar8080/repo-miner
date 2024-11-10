@@ -23,3 +23,8 @@ export const ollama = {
   api: process.env.OLLAMA_API || "http://localhost:11434/api/embeddings",
   embeddingModel: process.env.OLLAMA_EMBEDDING_MODEL || "",
 };
+
+export const googleAi = {
+  apiKey: process.env.GOOGLE_AI_API_KEY || "",
+  model: "gemini-1.5-flash",
+};

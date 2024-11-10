@@ -54,13 +54,16 @@ model Repository {
   repositoryStatus RepositoryStatus? @default(CLONING)
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
+  QueryHistory     QueryHistory[]
 }
 
 model QueryHistory {
-  id            String   @id @default(uuid())
+  id            String     @id @default(uuid())
   queryText     String
   resultSummary String?
-  mine          Mine     @relation(fields: [mineId], references: [id], onDelete: Cascade)
+  repoId        String
   mineId        String
-  createdAt     DateTime @default(now())
+  createdAt     DateTime   @default(now())
+  repository    Repository @relation(fields: [repoId], references: [id], onDelete: Cascade)
+  mine          Mine       @relation(fields: [mineId], references: [id], onDelete: Cascade)
 }

@@ -56,7 +56,7 @@ export const codeChunkWorker = new Worker(
     );
 
     if (updatedRepo) {
-      console.log(`update repo ${repoId} status to "EMBEDDING"`);
+      console.log(`updated repo: ${repoId} status to "EMBEDDING"`);
     }
   },
 

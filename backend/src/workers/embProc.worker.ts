@@ -8,11 +8,15 @@ export const embProcessor = new Worker(
   "embeddingStorageQueue",
   async (job) => {
     const { repoId, embeddings } = job.data;
+    console.log(typeof embeddings);
+    console.log("embeddings: " + embeddings);
 
     try {
       // process the embeddings and push to chroma db
       for (const emb of embeddings) {
         const { startLine, endLine, filePath, content, embedding } = emb;
+
+        console.log({ startLine, endLine, filePath, content, embedding });
 
         await addEmbChunkContentToCollection(
           repoId,

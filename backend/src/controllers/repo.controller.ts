@@ -3,7 +3,6 @@ import { asyncHandler } from "../utils/asyncHandler";
 import { ProtectedRequest } from "../types/app-request";
 import { cloneRepositoryQueue } from "../queues/queues";
 import { ApiResponse } from "../utils/ApiResponse";
-import { hashString } from "../utils/common";
 import { RepositoryModel } from "../models/repository.model";
 import { MineModel } from "../models/mine.model";
 

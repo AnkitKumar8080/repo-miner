@@ -6,6 +6,7 @@ import {
   createMine,
   deleteMine,
   getAllMines,
+  handleQueryRequest,
 } from "../controllers/mine.controller";
 
 export const mineRouter = Router();
@@ -18,3 +19,5 @@ mineRouter
   .post(mineValidator(), validate, createMine)
   .get(getAllMines)
   .delete(deleteMine);
+
+mineRouter.route("/query").post(handleQueryRequest);
